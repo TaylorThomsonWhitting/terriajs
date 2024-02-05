@@ -40,7 +40,7 @@ export const shareConvertNotification =
 
     return (
       <React.Fragment>
-        <Text>
+        <Text textDark>
           {parseCustomMarkdownToReact(
             i18next.t("share.convertNotificationMessage")
           )}
@@ -53,7 +53,7 @@ export const shareConvertNotification =
             text-align: left;
           `}
         >
-          <TextSpan textLight bold medium>
+          <TextSpan bold medium textDark={true}>
             {parseCustomMarkdownToReact(
               i18next.t("share.convertNotificationHelp")
             )}
@@ -67,7 +67,7 @@ export const shareConvertNotification =
             text-align: left;
           `}
         >
-          <TextSpan textLight bold medium>
+          <TextSpan textDark={true} bold medium>
             {parseCustomMarkdownToReact(
               i18next.t("share.convertNotificationFeedback")
             )}
@@ -77,6 +77,7 @@ export const shareConvertNotification =
         <Spacing bottom={2} />
 
         <Collapsible
+          light={false}
           btnRight={true}
           title={i18next.t("share.convertNotificationWarningsTitle")}
           titleTextProps={{ large: true }}

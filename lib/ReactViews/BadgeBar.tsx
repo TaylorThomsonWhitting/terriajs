@@ -22,7 +22,7 @@ const BadgeBar: React.FC<IProps> = (props: IProps) => {
         border-bottom: 1px solid ${theme.darkWithOverlay};
       `}
     >
-      <TextSpan textLight uppercase overflowHide overflowEllipsis>
+      <TextSpan textDark uppercase overflowHide overflowEllipsis>
         {props.label} {props.badge ? `(${props.badge})` : null}
       </TextSpan>
 

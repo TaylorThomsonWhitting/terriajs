@@ -104,6 +104,7 @@ export const terriaErrorNotification =
           css={`
             p {
               margin: 5px 0px;
+              color: black;
             }
             // Fix feedback button color
             button {
@@ -122,6 +123,7 @@ export const terriaErrorNotification =
           <>
             <Spacing bottom={2} />
             <Collapsible
+              light={false}
               btnRight={true}
               title={i18next.t("models.raiseError.developerDetails")}
               titleTextProps={{ large: true }}

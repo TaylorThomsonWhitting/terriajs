@@ -81,11 +81,10 @@ class Workbench extends React.Component<IProps> {
           >
             <StyledIcon
               glyph={Icon.GLYPHS.remove}
-              light
               styledWidth={"12px"}
               displayInline
             />
-            <TextSpan textLight small>
+            <TextSpan textDark small>
               {t("workbench.removeAll")}
             </TextSpan>
           </RawButton>
@@ -98,7 +97,7 @@ class Workbench extends React.Component<IProps> {
                 padding-left: 5px;
               `}
             >
-              <TextSpan textLight small>
+              <TextSpan textDark small>
                 {t("workbench.expandAll")}
               </TextSpan>
             </RawButton>
@@ -111,7 +110,7 @@ class Workbench extends React.Component<IProps> {
                 padding-left: 5px;
               `}
             >
-              <TextSpan textLight small>
+              <TextSpan textDark small>
                 {t("workbench.collapseAll")}
               </TextSpan>
             </RawButton>

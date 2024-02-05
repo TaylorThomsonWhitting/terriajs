@@ -42,7 +42,7 @@ export const SelectableDimensionEnum: React.FC<{
   return dim.allowCustomInput ? (
     <ReactSelectCreatable
       css={`
-        color: ${theme.dark};
+        color: ${theme.textDark};
       `}
       options={options}
       value={selectedOption}
@@ -67,7 +67,7 @@ export const SelectableDimensionEnum: React.FC<{
   ) : (
     <ReactSelect
       css={`
-        color: ${theme.dark};
+        color: ${theme.textDark};
       `}
       options={options}
       value={selectedOption}
@@ -82,7 +82,7 @@ export const SelectableDimensionEnum: React.FC<{
         ...selectTheme,
         colors: {
           ...selectTheme.colors,
-          primary25: theme.greyLighter,
+          primary25: theme.colorSecondary,
           primary50: theme.colorPrimary,
           primary75: theme.colorPrimary,
           primary: theme.colorPrimary
@@ -131,7 +131,7 @@ export const SelectableDimensionEnumMulti: React.FC<{
         ...selectTheme,
         colors: {
           ...selectTheme.colors,
-          primary25: theme.greyLighter,
+          primary25: theme.colorSecondary,
           primary50: theme.colorPrimary,
           primary75: theme.colorPrimary,
           primary: theme.colorPrimary

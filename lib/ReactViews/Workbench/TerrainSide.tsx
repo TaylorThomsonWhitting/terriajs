@@ -23,6 +23,7 @@ interface ITerrainSideProps {
   spaced?: boolean;
   buttonProps: any;
   activeColor: string;
+  theme: any;
 }
 
 const TerrainSide: React.FC<ITerrainSideProps> = observer(
@@ -96,6 +97,7 @@ const TerrainSide: React.FC<ITerrainSideProps> = observer(
         <Box
           css={`
             ${props.spaced && `gap: 6px;`}
+            background-color: ${props.theme.colorPrimary}
           `}
         >
           {Object.values(sides).map((side) => (
@@ -103,7 +105,7 @@ const TerrainSide: React.FC<ITerrainSideProps> = observer(
               key={side}
               onClick={(evt: any) => showTerrainOnSide(side, evt)}
               css={`
-                background: ${theme.overlay};
+                background: white;
                 padding: 14px 0;
                 display: flex;
                 align-items: center;
@@ -116,11 +118,11 @@ const TerrainSide: React.FC<ITerrainSideProps> = observer(
                 ${props.buttonProps && props.buttonProps.css}
                 ${props.activeColor &&
                 side === currentSide &&
-                `background-color: ${props.activeColor}`}
+                `background-color: ${props.theme.primaryColor}; opacity: 0.8`}
               `}
               {...props.buttonProps}
             >
-              <TextSpan textLight small>
+              <TextSpan textDark small>
                 {t(side)}
               </TextSpan>
             </RawButton>
@@ -134,6 +136,9 @@ const TerrainSide: React.FC<ITerrainSideProps> = observer(
             isChecked={depthTestAgainstTerrainEnabled}
             title={depthTestAgainstTerrainLabel}
             onChange={toggleDepthTestAgainstTerrainEnabled}
+            css={`
+              fill: white;
+            `}
           >
             <TextSpan>{t("settingPanel.terrain.hideUnderground")}</TextSpan>
           </Checkbox>

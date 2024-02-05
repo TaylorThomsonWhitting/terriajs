@@ -15,19 +15,19 @@ const CatalogGroupButton = styled.button`
   ${(props) => `
     &:hover,
     &:focus {
-      color: ${props.theme.textLight};
-      background-color: ${props.theme.modalHighlight};
+      color: ${props.theme.textDark};
+      background-color: ${props.theme.colorSecondary};
       svg {
-        fill: white;
+        fill: black;
       }
     }
     ${
       props.active &&
       `
-        color: ${props.theme.textLight};
-        background-color: ${props.theme.modalHighlight};
+        color: ${props.theme.textDark};
+        background-color: ${props.theme.colorSecondary};
         svg {
-          fill: white;
+          fill: black;
         }
       `
     }

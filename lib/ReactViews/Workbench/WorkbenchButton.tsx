@@ -24,7 +24,7 @@ interface IStyledWorkbenchButton {
 const StyledWorkbenchButton = styled(RawButton)<IStyledWorkbenchButton>`
   border-radius: 3px;
   background: ${(props) => props.theme.dark};
-  color: ${(props) => props.theme.textLight};
+  color: ${(props) => props.theme.colorPrimary};
   flex-grow: 1;
 
   height: 32px;
@@ -34,12 +34,13 @@ const StyledWorkbenchButton = styled(RawButton)<IStyledWorkbenchButton>`
   svg {
     height: 16px;
     width: 16px;
-    fill: ${(props) => props.theme.textLight};
+    fill: ${(props) => props.theme.colorPrimary};
   }
 
   &:hover,
   &:focus {
-    background: ${(props) => props.theme.colorPrimary};
+    // background: ${(props) => props.theme.colorPrimary};
+    opacity: 0.9;
   }
 
   // disabled

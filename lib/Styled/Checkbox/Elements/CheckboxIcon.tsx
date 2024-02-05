@@ -9,7 +9,7 @@ const StyledCheckboxIcon = styled(StyledIcon).attrs({
   top: 0.125em;
   align-self: flex-start;
   position: relative;
-  fill: currentColor;
+  // fill: ${(props) => !props.disabled && 'black'};
   ${(props) =>
     !props.disabled &&
     `

@@ -107,7 +107,7 @@ const Collapsible: React.FC<CollapsibleProps> = observer((props) => {
       {isOpen ? (
         <Box {...props.bodyBoxProps}>
           <Text
-            textLight={props.light ?? true}
+            textDark
             small
             id={`${props.title}`}
             {...props.bodyTextProps}

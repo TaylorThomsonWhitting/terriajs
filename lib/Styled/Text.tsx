@@ -104,7 +104,7 @@ export const Text = styled.div<ITextProps>`
   ${(props) =>
     props.textDark &&
     `
-    color: ${props.theme.textDark};
+    color: ${props.theme.textBlack};
   `}
   ${(props) =>
     props.textDarker &&

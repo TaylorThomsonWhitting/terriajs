@@ -57,15 +57,16 @@ const BoxViewingControl = styled(Box).attrs({
 const ViewingControlMenuButton = styled(RawButton).attrs({
   // primaryHover: true
 })`
-  color: ${(props) => props.theme.textDarker};
+  color: ${(props) => props.theme.textBlack};
   background-color: ${(props) => props.theme.textLight};
+  border: 1px solid black;
 
   ${StyledIcon} {
     width: 35px;
   }
 
   svg {
-    fill: ${(props) => props.theme.textDarker};
+    fill: ${(props) => props.theme.textBlack};
     width: 18px;
     height: 18px;
   }
@@ -83,10 +84,10 @@ const ViewingControlMenuButton = styled(RawButton).attrs({
 
   &:hover,
   &:focus {
-    color: ${(props) => props.theme.textLight};
-    background-color: ${(props) => props.theme.colorPrimary};
+    color: ${(props) => props.theme.textDark};
+    background-color: ${(props) => props.theme.colorSecondary};
     svg {
-      fill: ${(props) => props.theme.textLight};
+      fill: ${(props) => props.theme.textDark};
     }
   }
 `;

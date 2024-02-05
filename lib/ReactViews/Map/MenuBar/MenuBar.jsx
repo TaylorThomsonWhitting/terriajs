@@ -35,6 +35,7 @@ const MenuBar = observer((props) => {
   };
 
   const storyEnabled = terria.configParameters.storyEnabled;
+  const shareEnabled = terria.configParameters.shareEnabled;
   const enableTools = terria.userProperties.get("tools") === "1";
 
   return (
@@ -93,6 +94,7 @@ const MenuBar = observer((props) => {
             </li>
           </ul>
         )}
+        {shareEnabled && ( 
         <ul className={classNames(Styles.menu)}>
           <li className={Styles.menuItem}>
             <SharePanel
@@ -102,6 +104,7 @@ const MenuBar = observer((props) => {
             />
           </li>
         </ul>
+        )}
         {!viewState.useSmallScreenInterface &&
           menuItems.map((element, i) => (
             <li className={Styles.menuItem} key={i}>

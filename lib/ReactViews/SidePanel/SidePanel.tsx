@@ -29,17 +29,26 @@ const ResponsiveSpacing = styled(Box)`
   }
 `;
 
-const HelpfulHintsIcon = () => {
+const HelpfulHintsIcon: React.FC<EmptyWorkbenchProps> = (props) => {
   return (
-    <StyledIcon
-      glyph={Icon.GLYPHS.bulb}
-      styledWidth={"14px"}
-      styledHeight={"14px"}
-      light
-      css={`
-        padding: 2px 1px;
-      `}
-    />
+    <div css={`
+      border-radius: 100%; 
+      background-color: ${props.theme.colorSecondary};
+      height: 16px;
+      width: 16px;
+    `}>
+      <StyledIcon
+        glyph={Icon.GLYPHS.bulb}
+        styledWidth={"14px"}
+        styledHeight={"14px"}
+        primary
+        css={`
+          padding: 2px 1px;
+          position: relative;
+          top: -2px
+        `}
+      />
+    </div>
   );
 };
 
@@ -49,43 +58,45 @@ interface EmptyWorkbenchProps {
 
 const EmptyWorkbench: React.FC<EmptyWorkbenchProps> = (props) => {
   const { t } = useTranslation();
+  const workbenchImage = require("../../../wwwroot/images/workbench.svg");
   return (
     <Text large textLight>
       <Box column fullWidth justifySpaceBetween>
         <Box centered column>
-          <ResponsiveSpacing />
-          <Text large color={props.theme.textLightDimmed}>
+          <img src={workbenchImage} alt="Workbench" css={`padding: 20px; margin-bottom: 20px`}/>
+          {/* <ResponsiveSpacing /> */}
+          <Text large color={props.theme.textDark} css={`margin-bottom: 30px`}>
             {t("emptyWorkbench.emptyArea")}
           </Text>
-          <ResponsiveSpacing />
+          {/* <ResponsiveSpacing /> */}
         </Box>
         <BoxHelpfulHints column paddedRatio={3} overflowY="auto" scroll>
           <Box left>
-            <Text extraLarge bold>
+            <Text extraLarge bold textDark>
               {t("emptyWorkbench.helpfulHints")}
             </Text>
           </Box>
           <Spacing bottom={4} />
           <Box>
-            <HelpfulHintsIcon />
+              <HelpfulHintsIcon theme={props.theme} />
             <Spacing right={1} />
-            <Text medium light>
+            <Text medium light textDark>
               {t("emptyWorkbench.helpfulHintsOne")}
             </Text>
           </Box>
           <Spacing bottom={3} />
           <Box>
-            <HelpfulHintsIcon />
+            <HelpfulHintsIcon theme={props.theme} />
             <Spacing right={1} />
-            <Text medium light>
+            <Text medium light textDark>
               {t("emptyWorkbench.helpfulHintsTwo")}
             </Text>
           </Box>
           <Spacing bottom={3} />
           <Box>
-            <HelpfulHintsIcon />
+            <HelpfulHintsIcon theme={props.theme} />
             <Spacing right={1} />
-            <Text medium light>
+            <Text medium light textDark>
               {t("emptyWorkbench.helpfulHintsThree")}
             </Text>
           </Box>
@@ -169,13 +180,16 @@ const SidePanel = observer<React.FC<SidePanelProps>>(
             )}
           />
           <Spacing bottom={2} />
-          <Box justifySpaceBetween>
+          <Box justifySpaceBetween css={`
+            width: 95%;
+            margin: auto;
+          `}>
             <SidePanelButton
               ref={refForExploreMapData}
               onClick={onAddDataClicked}
               title={addData}
               btnText={addData}
-              styledWidth={"200px"}
+              styledWidth={"180px"}
             >
               <StyledIcon glyph={Icon.GLYPHS.add} light styledWidth={"20px"} />
             </SidePanelButton>
@@ -185,10 +199,11 @@ const SidePanel = observer<React.FC<SidePanelProps>>(
               title={t("addData.load")}
               btnText={uploadText}
               styledWidth={"130px"}
+              outlined
             >
               <StyledIcon
                 glyph={Icon.GLYPHS.uploadThin}
-                light
+                primary
                 styledWidth={"20px"}
               />
             </SidePanelButton>

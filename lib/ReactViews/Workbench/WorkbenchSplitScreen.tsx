@@ -4,7 +4,7 @@ import { runInAction } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useTheme } from "styled-components";
+import { useTheme, withTheme } from "styled-components";
 import Terria from "../../Models/Terria";
 import ViewerMode from "../../Models/ViewerMode";
 import Box from "../../Styled/Box";
@@ -15,6 +15,7 @@ import TerrainSide from "./TerrainSide";
 
 interface IWorkbenchSplitScreenProps {
   terria: Terria;
+  theme: any,
 }
 const WorkbenchSplitScreen: React.FC<IWorkbenchSplitScreenProps> = observer(
   (props: IWorkbenchSplitScreenProps) => {
@@ -34,7 +35,7 @@ const WorkbenchSplitScreen: React.FC<IWorkbenchSplitScreenProps> = observer(
           fullWidth
           column
           css={`
-            background: ${theme.darkWithOverlay};
+            background: ${props.theme.colorPrimary};
             color: ${theme.textLight};
             border-radius: 2px;
           `}
@@ -44,12 +45,12 @@ const WorkbenchSplitScreen: React.FC<IWorkbenchSplitScreenProps> = observer(
             centered
             justifySpaceBetween
             css={`
-              background: ${theme.colorSecondary};
+              background: ${props.theme.colorPrimary};
               border-radius: 2px 2px 0 0;
               padding: 0 10px;
               font-weight: bold;
               font-size: 14px;
-              color: ${theme.textLight};
+              color: ${props.theme.textLight};
               line-height: 34px;
             `}
           >
@@ -70,13 +71,14 @@ const WorkbenchSplitScreen: React.FC<IWorkbenchSplitScreenProps> = observer(
           <Box fullWidth paddedHorizontally>
             <TerrainSide
               terria={terria}
+              theme={props.theme}
               spaced={false}
               buttonProps={{
                 css: `border: 0;
                 padding: 8px 0;
               `
               }}
-              activeColor={theme.colorSecondary}
+              activeColor={props.theme.colorSecondary}
             ></TerrainSide>
           </Box>
         </Box>
@@ -86,4 +88,4 @@ const WorkbenchSplitScreen: React.FC<IWorkbenchSplitScreenProps> = observer(
   }
 );
 
-export default WorkbenchSplitScreen;
+export default withTheme(WorkbenchSplitScreen);

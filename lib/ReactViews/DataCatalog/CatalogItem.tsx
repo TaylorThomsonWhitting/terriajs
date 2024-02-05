@@ -108,10 +108,10 @@ const ItemTitleButton = styled(RawButton)<{
 
   &:focus,
   &:hover {
-    color: ${(p) => p.theme.modalHighlight};
+    color: ${(p) => p.theme.colorPrimary};
   }
 
-  ${(p) => p.selected && `color: ${p.theme.modalHighlight};`}
+  ${(p) => p.selected && `color: ${p.theme.colorPrimary};`}
 
   @media (max-width: ${(p) => p.theme.sm}px) {
     font-size: 0.9rem;
@@ -132,7 +132,7 @@ const ActionButton = styled(RawButton)`
   &:hover,
   &:focus {
     svg {
-      fill: ${(p) => p.theme.modalHighlight};
+      fill: ${(p) => p.theme.colorPrimary};
     }
   }
 `;

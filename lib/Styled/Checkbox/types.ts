@@ -47,6 +47,7 @@ export type ICheckboxProps = {
    * styled components.
    */
   className?: string;
+  fillColor?: string;
 };
 
 export interface CheckboxIconProps {
@@ -59,4 +60,5 @@ export interface CheckboxIconProps {
    * does not modify the isChecked property.
    */
   isIndeterminate?: boolean;
+  fillColor?: string;
 }

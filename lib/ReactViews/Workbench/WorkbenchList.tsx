@@ -56,7 +56,7 @@ class WorkbenchList extends React.Component<IProps> {
         column
       >
         {this.props.terria.showSplitter && (
-          <WorkbenchSplitScreen terria={this.props.terria} />
+          <WorkbenchSplitScreen terria={this.props.terria}/>
         )}
         <Sortable
           onSort={this.onSort}

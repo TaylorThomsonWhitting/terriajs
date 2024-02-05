@@ -13,13 +13,17 @@ const SearchInput = styled.input`
   margin-top: 0;
   margin-bottom: 0;
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   height: 40px;
   width: 100%;
   display: block;
   padding: 0.5rem 40px;
   vertical-align: middle;
   -webkit-appearance: none;
+  outline: 1px solid #E5E5E5;
+  &:focus {
+    outline: 1px solid ${(props) => props.theme.colorPrimary};
+  }
 `;
 
 export const DEBOUNCE_INTERVAL = 1000;

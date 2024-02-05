@@ -7,7 +7,7 @@ import {
   makeObservable
 } from "mobx";
 import { observer } from "mobx-react";
-import Slider from "rc-slider";
+import Slider, { Handle } from "rc-slider";
 import React, { ChangeEvent, ComponentProps, MouseEvent } from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import styled, { DefaultTheme, withTheme } from "styled-components";
@@ -30,6 +30,7 @@ import Text, { TextSpan } from "../../../Styled/Text";
 import withTerriaRef from "../../HOCs/withTerriaRef";
 import MenuPanel from "../../StandardUserInterface/customizable/MenuPanel";
 import Styles from "./setting-panel.scss";
+// import { PropTypes } from "prop-types";v style={s}
 
 const sides = {
   left: "settingPanel.terrain.left",
@@ -232,6 +233,7 @@ class SettingPanel extends React.Component<PropTypes> {
       ? t("settingPanel.timeline.alwaysShowLabel")
       : t("settingPanel.timeline.hideLabel");
 
+
     return (
       //@ts-ignore - not yet ready to tackle tsfying MenuPanel
       <MenuPanel
@@ -244,7 +246,7 @@ class SettingPanel extends React.Component<PropTypes> {
       >
         <Box padded column>
           <Box paddedVertically={1}>
-            <Text as="label">{t("settingPanel.mapView")}</Text>
+            <Text as="label" textDark>{t("settingPanel.mapView")}</Text>
           </Box>
           <FlexGrid gap={1} elementsNo={3}>
             {Object.entries(MapViewers).map(([key, viewerMode]) => (
@@ -253,7 +255,7 @@ class SettingPanel extends React.Component<PropTypes> {
                 isActive={key === currentViewer}
                 onClick={(event: any) => this.selectViewer(key as any, event)}
               >
-                <Text mini>{t(viewerMode.label)}</Text>
+                <Text mini textDark>{t(viewerMode.label)}</Text>
               </SettingsButton>
             ))}
           </FlexGrid>
@@ -262,7 +264,7 @@ class SettingPanel extends React.Component<PropTypes> {
               <Spacing bottom={2} />
               <Box column>
                 <Box paddedVertically={1}>
-                  <Text as="label">{t("settingPanel.terrain.sideLabel")}</Text>
+                  <Text as="label" textDark>{t("settingPanel.terrain.sideLabel")}</Text>
                 </Box>
                 <FlexGrid gap={1} elementsNo={3}>
                   {Object.values(sides).map((side: any) => (
@@ -273,7 +275,7 @@ class SettingPanel extends React.Component<PropTypes> {
                         this.showTerrainOnSide(side, event)
                       }
                     >
-                      <Text mini>{t(side)}</Text>
+                      <Text mini textDark>{t(side)}</Text>
                     </SettingsButton>
                   ))}
                 </FlexGrid>
@@ -290,7 +292,7 @@ class SettingPanel extends React.Component<PropTypes> {
                       this
                     )}
                   >
-                    <TextSpan>
+                    <TextSpan textDark>
                       {t("settingPanel.terrain.hideUnderground")}
                     </TextSpan>
                   </Checkbox>
@@ -302,10 +304,10 @@ class SettingPanel extends React.Component<PropTypes> {
             <Spacing bottom={2} />
             <Box column>
               <Box paddedVertically={1}>
-                <Text as="label">{t("settingPanel.baseMap")}</Text>
+                <Text as="label" textDark>{t("settingPanel.baseMap")}</Text>
               </Box>
               <Box paddedVertically={1}>
-                <Text as="label" mini>
+                <Text as="label" mini textDark>
                   {this.activeMapName}
                 </Text>
               </Box>
@@ -344,7 +346,7 @@ class SettingPanel extends React.Component<PropTypes> {
             <Spacing bottom={2} />
             <Box column>
               <Box paddedVertically={1}>
-                <Text as="label">{t("settingPanel.timeline.title")}</Text>
+                <Text as="label" textDark>{t("settingPanel.timeline.title")}</Text>
               </Box>
               <Checkbox
                 textProps={{ small: true }}
@@ -357,7 +359,7 @@ class SettingPanel extends React.Component<PropTypes> {
                   );
                 }}
               >
-                <TextSpan>{t("settingPanel.timeline.alwaysShow")}</TextSpan>
+                <TextSpan textDark>{t("settingPanel.timeline.alwaysShow")}</TextSpan>
               </Checkbox>
             </Box>
           </>
@@ -366,7 +368,7 @@ class SettingPanel extends React.Component<PropTypes> {
               <Spacing bottom={2} />
               <Box column>
                 <Box paddedVertically={1}>
-                  <Text as="label">{t("settingPanel.imageOptimisation")}</Text>
+                  <Text as="label" textDark>{t("settingPanel.imageOptimisation")}</Text>
                 </Box>
                 <Checkbox
                   textProps={{ small: true }}
@@ -375,16 +377,16 @@ class SettingPanel extends React.Component<PropTypes> {
                   title={nativeResolutionLabel}
                   onChange={() => this.toggleUseNativeResolution()}
                 >
-                  <TextSpan>
+                  <TextSpan textDark>
                     {t("settingPanel.nativeResolutionHeader")}
                   </TextSpan>
                 </Checkbox>
-                <Spacing bottom={2} />
+                {/* <Spacing bottom={2} />
                 <Box paddedVertically={1}>
-                  <Text as="label">{t("settingPanel.mapQuality")}</Text>
+                  <Text as="label" textDark>{t("settingPanel.mapQuality")}</Text>
                 </Box>
                 <Box verticalCenter>
-                  <Text mini>{t("settingPanel.qualityLabel")}</Text>
+                  <Text mini textDark>{t("settingPanel.qualityLabel")}</Text>
                   <Slider
                     min={1}
                     max={3}
@@ -393,6 +395,7 @@ class SettingPanel extends React.Component<PropTypes> {
                     onChange={(val) =>
                       this.onBaseMaximumScreenSpaceErrorChange(val)
                     }
+                    handle={<CustomHandle />}
                     marks={{ 2: "" }}
                     aria-valuetext={qualityLabels}
                     css={`
@@ -400,8 +403,8 @@ class SettingPanel extends React.Component<PropTypes> {
                       margin-top: 5px;
                     `}
                   />
-                  <Text mini>{t("settingPanel.performanceLabel")}</Text>
-                </Box>
+                  <Text mini textDark>{t("settingPanel.performanceLabel")}</Text> 
+                </Box> */}
               </Box>
             </>
           )}
@@ -410,6 +413,8 @@ class SettingPanel extends React.Component<PropTypes> {
     );
   }
 }
+
+
 
 export const SETTING_PANEL_NAME = "MenuBarMapSettingsButton";
 export default withTranslation()(
@@ -436,9 +441,9 @@ type IButtonProps = {
 };
 
 const SettingsButton = styled(Button)<IButtonProps>`
-  background-color: ${(props) => props.theme.overlay};
+  background-color: ${(props) => props.theme.colorSecondary};
   border: 1px solid
-    ${(props) => (props.isActive ? "rgba(255, 255, 255, 0.5)" : "transparent")};
+    ${(props) => (props.isActive ? "rgba(0, 0, 0, 0.5)" : "transparent")};
 `;
 
 const StyledBasemapButton = styled(RawButton)<IButtonProps>`
@@ -446,7 +451,7 @@ const StyledBasemapButton = styled(RawButton)<IButtonProps>`
   position: relative;
   border: 2px solid
     ${(props) =>
-      props.isActive ? props.theme.turquoiseBlue : "rgba(255, 255, 255, 0.5)"};
+      props.isActive ? props.theme.colorPrimary : "rgba(0, 0, 0, 0.5)"};
 `;
 
 const StyledImage = styled(Box).attrs({

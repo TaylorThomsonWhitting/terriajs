@@ -23,15 +23,16 @@ const LeftRightButton = styled(RawButton).attrs({
   text-align: center;
   padding: 5px;
   color: ${(p) => p.theme.textLight};
-  background-color: ${(p) => p.theme.dark};
+  background-color: ${(p) => p.theme.colorPrimary};
   ${(p) =>
     p.isActive &&
     `
-    background-color: ${p.theme.colorSecondary};
+    background-color: ${p.theme.colorPrimary};
   `}
   &:hover,
   &:focus {
-    background-color: ${(p) => p.theme.colorSecondary};
+    background-color: ${(p) => p.theme.colorPrimary};
+    opacity: 0.9;
   }
 `;
 

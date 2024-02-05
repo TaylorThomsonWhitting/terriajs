@@ -100,13 +100,15 @@ const DropdownPanel = createReactClass({
             this.props.btnRef || ((element) => (this.buttonElement = element))
           }
           isOpen={this.isOpen()}
-          css={`
+          css={`&:hover {
+            background-color: red;
+          }
             ${(p) =>
               p.isOpen &&
               `&:not(.foo) {
-                background: ${p.theme.colorPrimary};
+                background: ${p.theme.colorSecondary};
                 svg {
-                  fill: ${p.theme.textLight};
+                  fill: ${p.theme.textDark};
                 }
               }`}
           `}

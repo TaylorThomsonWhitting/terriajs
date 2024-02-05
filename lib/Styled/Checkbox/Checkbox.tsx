@@ -86,7 +86,7 @@ const Checkbox = memo(
           align-items: center;
           &:focus-within {
             //copy the global focus
-            outline: 3px solid #c390f9;
+            // outline: 3px solid #c390f9;
           }
           ${!isDisabled &&
           `

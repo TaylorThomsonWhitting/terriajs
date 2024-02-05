@@ -31,6 +31,7 @@ interface IStyledButtonProps extends IButtonProps {
   splitter?: boolean;
   textLight?: boolean;
   transparentBg?: boolean;
+  outlined?: boolean;
   disabled?: boolean;
   [key: string]: any;
 }
@@ -75,11 +76,17 @@ const StyledButton = styled.button<IStyledButtonProps>`
     color: #fff;
     background-color: ${props.theme.colorPrimary};
     border: none;
-    border-radius:20px;
+    border-radius: 8px;
   `}
-  ${(props) => props.rounded && ` border-radius: 32px; `}
+  ${(props) => props.rounded && ` border-radius: 8px; `}
   ${(props) => props.roundLeft && `border-radius: 32px 0 0 32px;`}
   ${(props) => props.roundRight && `border-radius: 0 32px 32px 0;`}
+  ${(props) => props.outlined && 
+  `
+    background-color: transparent;
+    color: ${props.theme.colorPrimary};
+    border: 1px solid ${props.theme.colorPrimary};
+  `}
 
   ${(props) =>
     props.secondary &&
@@ -87,7 +94,7 @@ const StyledButton = styled.button<IStyledButtonProps>`
     // background-color: #4d5766;
     background-color: ${props.theme.textLight};
     color: ${props.theme.darkWithOverlay};
-    border-radius: 20px;
+    border-radius: 8px;
     border: 2px solid ${props.theme.darkWithOverlay};
   `}
   ${(props) =>

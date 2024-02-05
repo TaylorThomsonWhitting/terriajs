@@ -153,7 +153,7 @@ export class SearchBoxAndResultsRaw extends React.Component {
 
     return (
       <Text textDarker>
-        <Box fullWidth>
+        <Box css={`width: 95%; margin: auto`}>
           <PresentationBox highlightBottom={shouldShowResults}>
             <SearchBox
               ref={this.locationSearchRef}

@@ -118,6 +118,7 @@ class WorkbenchItemRaw extends React.Component<IProps> {
                       title={t("workbench.toggleVisibility")}
                       onChange={() => this.toggleVisibility()}
                       css={`
+                        fill: white;
                         overflow-wrap: anywhere;
                       `}
                       textProps={{ medium: true, fullWidth: true }}
@@ -206,7 +207,7 @@ const DraggableBox = styled(Box)`
 `;
 
 const StyledLi = styled(Li)`
-  background: ${(p) => p.theme.darkWithOverlay};
+  background: ${(p) => p.theme.colorPrimary};
   color: ${(p) => p.theme.textLight};
   border-radius: 4px;
   margin-bottom: 5px;

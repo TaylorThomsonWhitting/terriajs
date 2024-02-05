@@ -182,6 +182,10 @@ export interface ConfigParameters {
    */
   storyEnabled: boolean;
   /**
+   * Whether the story is enabled. If false story function button won't be available.
+   */
+  shareEnabled: boolean;
+  /**
    * True (the default) to intercept the browser's print feature and use a custom one accessible through the Share panel.
    */
   interceptBrowserPrint?: boolean;
@@ -506,6 +510,7 @@ export default class Terria {
     feedbackUrl: undefined,
     initFragmentPaths: ["init/"],
     storyEnabled: true,
+    shareEnabled: true,
     interceptBrowserPrint: true,
     tabbedCatalog: false,
     useCesiumIonTerrain: true,

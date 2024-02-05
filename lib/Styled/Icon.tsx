@@ -172,6 +172,7 @@ export interface IStyledIconProps {
   dark?: boolean;
   realDark?: boolean;
   fillColor?: string;
+  primary?: boolean;
   opacity?: number;
 }
 
@@ -199,6 +200,8 @@ export const StyledIcon = styled(Icon)<IStyledIconProps>`
   ${(props) => props.fillColor && `fill: ${props.fillColor};`}
 
   ${(props) => props.opacity && `opacity: ${props.opacity};`}
+  ${(props) => props.primary && `fill: ${props.theme.colorPrimary};`}
+
 `;
 
 export default Object.assign(Icon, { GLYPHS });
