@@ -1,0 +1,50 @@
+name: azure-publish
+on:
+  push:
+    branches:
+      - dev
+
+env:
+  NPM_TAG: latest
+  AZURE_ACCESS_TOKEN: ${{ secrets.AZURE_ACCESS_TOKEN }}
+
+jobs:
+  publish:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Set up Node.js for NPM
+        if: steps.detect.outputs.previous-version != steps.detect.outputs.current-version
+        uses: actions/setup-node@v4
+        with:
+          registry-url: "https://registry.npmjs.org"
+          node-version-file: ".nvmrc"
+
+      - name: Install yarn
+        if: steps.detect.outputs.previous-version != steps.detect.outputs.current-version
+        run: npm install -g yarn@^1.19.0
+
+      - name: Install dependencies
+        if: steps.detect.outputs.previous-version != steps.detect.outputs.current-version
+        run: yarn install --ignore-engines
+        env:
+          NODE_OPTIONS: "--max_old_space_size=8192"
+
+      - name: Lint and build terriajs
+        if: steps.detect.outputs.previous-version != steps.detect.outputs.current-version
+        run: npx gulp lint release
+        env:
+          NODE_OPTIONS: "--max_old_space_size=8192"
+
+      - name: Publish package to NPM
+        if: steps.detect.outputs.previous-version != steps.detect.outputs.current-version
+        run: npm publish --tag ${NPM_TAG}
+        env:
+          NODE_OPTIONS: "--max_old_space_size=8192"
+          NODE_AUTH_TOKEN: ${{ env.AZURE_ACCESS_TOKEN }}
