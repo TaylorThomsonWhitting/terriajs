@@ -37,11 +37,21 @@ jobs:
         run: npx gulp lint release
         env:
           NODE_OPTIONS: "--max_old_space_size=8192"
+
+      - name: Create .npmrc
+        run: |
+          echo "registry=https://pkgs.dev.azure.com/TaylorThomsonWhitting/_packaging/TaylorThomsonWhitting/npm/registry/" >> .npmrc
+          echo "//pkgs.dev.azure.com/TaylorThomsonWhitting/_packaging/TaylorThomsonWhitting/npm/registry/:username=ttw" >> .npmrc
+          echo "//pkgs.dev.azure.com/TaylorThomsonWhitting/_packaging/TaylorThomsonWhitting/npm/registry/:_password=$AZURE_ACCESS_TOKEN" >> .npmrc
+          echo "//pkgs.dev.azure.com/TaylorThomsonWhitting/_packaging/TaylorThomsonWhitting/npm/registry/:email=hub@ttw.com.au" >> .npmrc
+          echo "//pkgs.dev.azure.com/TaylorThomsonWhitting/_packaging/TaylorThomsonWhitting/npm/registry/:always_auth=true" >> .npmrc
+        env:
+          AZURE_ACCESS_TOKEN: ${{ secrets.AZURE_ACCESS_TOKEN }}
           
       - name: Publish package to Azure
         run: npm publish --tag ${NPM_TAG}
         env:
-          NPM_CONFIG_REGISTRY: "https://pkgs.dev.azure.com/TaylorThomsonWhitting/_packaging/TaylorThomsonWhitting/npm/registry/"
-          NPM_CONFIG__AUTH: ${{ secrets.AZURE_ACCESS_TOKEN }}
+          # NPM_CONFIG_REGISTRY: "https://pkgs.dev.azure.com/TaylorThomsonWhitting/_packaging/TaylorThomsonWhitting/npm/registry/"
+          # NPM_CONFIG__AUTH: ${{ secrets.AZURE_ACCESS_TOKEN }}
           NODE_OPTIONS: "--max_old_space_size=8192"
           NODE_AUTH_TOKEN: ${{ secrets.AZURE_ACCESS_TOKEN }}
