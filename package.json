@@ -8,7 +8,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/TerriaJS/terriajs"
+    "url": "http://github.com/TaylorThomsonWhitting/terriajs"
+  },
+  "publishConfig": {
+    "registry": "https://pkgs.dev.azure.com/TaylorThomsonWhitting/_packaging/TaylorThomsonWhitting/npm/registry/"
   },
   "resolutions": {
     "colors": "1.4.0",
@@ -240,7 +243,6 @@
     "prettier": "prettier --write .",
     "pretty-quick": "pretty-quick",
     "prettier-check": "prettier --check .",
-    "build-for-node": "tsc -b tsconfig-node.json",
-    "prepare": "yarn build-for-node && husky install"
+    "build-for-node": "tsc -b tsconfig-node.json"
   }
 }
