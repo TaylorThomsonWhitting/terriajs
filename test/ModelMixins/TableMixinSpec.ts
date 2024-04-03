@@ -34,6 +34,7 @@ import TableTrailStyleTraits, {
 
 import HorizontalOrigin from "terriajs-cesium/Source/Scene/HorizontalOrigin";
 import VerticalOrigin from "terriajs-cesium/Source/Scene/VerticalOrigin";
+import ScaleByDistanceTraits from "../../lib/Traits/TraitsClasses/ScaleByDistanceTraits";
 
 const LatLonValCsv = require("raw-loader!../../wwwroot/test/csv/lat_lon_val.csv");
 const LatLonEnumCsv = require("raw-loader!../../wwwroot/test/csv/lat_lon_enum.csv");
@@ -108,7 +109,7 @@ describe("TableMixin", function () {
     beforeEach(async function () {
       item.setTrait(CommonStrata.user, "csvString", LatLonEnumDateIdCsv);
       (await item.loadMapItems()).throwIfError();
-      dataSource = <CustomDataSource>item.mapItems[0];
+      dataSource = item.mapItems[0] as CustomDataSource;
       expect(dataSource instanceof CustomDataSource).toBe(true);
     });
 
@@ -196,7 +197,7 @@ describe("TableMixin", function () {
         LatLonEnumDateIdWithRegionCsv
       );
       (await item.loadMapItems()).throwIfError();
-      dataSource = <CustomDataSource>item.mapItems[0];
+      dataSource = item.mapItems[0] as CustomDataSource;
       expect(dataSource instanceof CustomDataSource).toBe(true);
     });
 
@@ -307,7 +308,7 @@ describe("TableMixin", function () {
 
         const duplicateValue = 7;
         let occurrences = 0;
-        for (let entity of mapItem.entities.values) {
+        for (const entity of mapItem.entities.values) {
           const val = entity.properties?.value.getValue();
           if (val === duplicateValue) {
             occurrences++;
@@ -349,7 +350,7 @@ describe("TableMixin", function () {
     beforeEach(async function () {
       item.setTrait(CommonStrata.user, "csvString", ParkingSensorDataCsv);
       (await item.loadMapItems()).throwIfError();
-      dataSource = <CustomDataSource>item.mapItems[0];
+      dataSource = item.mapItems[0] as CustomDataSource;
       expect(dataSource instanceof CustomDataSource).toBe(true);
     });
 
@@ -2022,6 +2023,64 @@ describe("TableMixin", function () {
           }
         });
       });
+    });
+
+    it("correctly applies disableDepthTestDistance trait", async function () {
+      item.setTrait(CommonStrata.user, "csvString", LatLonValCsv);
+      item.setTrait(CommonStrata.user, "styles", [
+        createStratumInstance(TableStyleTraits, {
+          id: "test-style",
+          point: createStratumInstance(TablePointStyleTraits, {
+            null: createStratumInstance(PointSymbolTraits, {
+              disableDepthTestDistance: 42
+            })
+          })
+        })
+      ]);
+      item.setTrait(CommonStrata.user, "activeStyle", "test-style");
+      await item.loadMapItems();
+
+      const mapItem = item.mapItems[0] as CustomDataSource;
+      mapItem.entities.values.forEach((entity) =>
+        expect(
+          entity.point?.disableDepthTestDistance?.getValue(JulianDate.now())
+        ).toBe(42)
+      );
+    });
+
+    it("correctly applies scaleByDistance traits", async function () {
+      item.setTrait(CommonStrata.user, "csvString", LatLonValCsv);
+      item.setTrait(CommonStrata.user, "styles", [
+        createStratumInstance(TableStyleTraits, {
+          id: "test-style",
+          point: createStratumInstance(TablePointStyleTraits, {
+            null: createStratumInstance(PointSymbolTraits, {
+              scaleByDistance: createStratumInstance(ScaleByDistanceTraits, {
+                near: 0,
+                nearValue: 4,
+                far: 50000,
+                farValue: 10
+              })
+            })
+          })
+        })
+      ]);
+      item.setTrait(CommonStrata.user, "activeStyle", "test-style");
+      await item.loadMapItems();
+
+      const mapItem = item.mapItems[0] as CustomDataSource;
+      mapItem.entities.values.forEach((entity) =>
+        expect(
+          entity.point?.scaleByDistance?.getValue(JulianDate.now())
+        ).toEqual(
+          jasmine.objectContaining({
+            near: 0,
+            nearValue: 4,
+            far: 50000,
+            farValue: 10
+          })
+        )
+      );
     });
 
     it("doesn't pick hidden style as default activeStyle", async function () {

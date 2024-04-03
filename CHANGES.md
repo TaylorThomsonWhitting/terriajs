@@ -1,8 +1,74 @@
 # Change Log
 
-#### next release (8.4.1)
+#### next release (8.7.1)
 
 - [The next improvement]
+
+#### 8.7.0 - 2024-03-22
+
+- **Breaking changes:**
+  - `generateCatalogIndex` now uses `commander` to parse arguments. Run `node ./build/generateCatalogIndex.js --help` for more information.
+- Fixed exception thrown from `objectArrayTrait` when a model has 0 strata and a `MergeStrategy` of `topStratum`.
+- Fix `generateCatalogIndex` after `searchProvider` changes
+- Fix bug with relative URLs being ignored in `generateCatalogIndex`
+- Fix bug with ArcGisMapServerImageryProvider not correctly identifying if the `tile` endpoint can be used
+
+#### 8.6.1 - 2024-03-14
+
+- Fix SDMX `featureInfoTemplate` `<chart>` bug not showing correct `yColumn`
+
+#### 8.6.0 - 2024-03-12
+
+- **Breaking changes:**
+  - Add `MergeStrategy` to `objectArrayTrait` - this includes a new `topStratum` strategy - similar to `Merge.All` (the default behaviour), but only elements that exist in the top-most strata will be merged with lower strata. Elements that only exist in lower strata will be removed.
+  - **Note** the only trait with `MergeStrategy` set to `topStratum` is `lines` in `TableChartStyleTraits`.
+- Fix `y-column` in `FeatureInfoPanelChart` (`<chart>`)
+
+#### 8.5.2 - 2024-03-07
+
+- Add `usePreCachedTilesIfAvailable` to `ArcGisMapServerCatalogItemTraits`.
+- Improved `ChartableMixin.isMixedInto` to ensure there are no false positive matches when testing References.
+- Fixed a bug in `MagdaReference` where members of a group would not be updated/created correctly when a group is reloaded.
+
+#### 8.5.1 - 2024-02-23
+
+- Added highly experimental CatalogProvider, intended to encapsulate functionality related to the entire catalog, or large subtrees of it, that doesn't fit into individual catalog member models.
+- `BingMapsCatalogItem` now supports Bing's `culture` parameter.
+- Update a prompt text in DataPreview.
+
+#### 8.5.0 - 2024-02-07
+
+- **Breaking changes:**
+  - Upgrade TypeScript to 5.2
+  - Switch Babel configuration to new JSX transform
+- Improve tsconfig files
+- Remove deprecated default `relatedMaps`
+- Update `thredds-catalog-crawler` to `0.0.6`
+- `WebMapServiceCatalogItem` will drop problematic query parameters from `url` when calling `GetCapabilities` (eg `"styles","srs","crs","format"`)
+- Fixed regression causing explorer window not to display instructions when first opened.
+- Enable eslint for typescript: plugin:@typescript-eslint/eslint-recommended
+- Fixed a bug where the search box was missing for small screen devices.
+- Prevent user adding empty web url
+- Fix bug where search results shown in `My Data` tab
+- Fix bug in function createDiscreteTimesFromIsoSegments where it might create duplicate timestamps.
+- Add option to enable/disable shortening share URLs via InitSourceData.
+- Fix bug in ArcGisMapServerCatalogItem.
+- Add examples.
+
+#### 8.4.1 - 2023-12-08
+
+- Temporary UX fixes for clipping box:
+  - An option to zoom to clipping box
+  - An option to re-position the clipping box
+  - Trigger repositioning of clipping box when the user enables clipping box for the first time
+  - Cursor and scale point handle changes (makes it much easier to grasp)
+  - More robust interaction with the box
+- Fix a bug where `DragPoints` was interfering with pedstrian mode mouse movements.
+- Update `webpack` to `4.47.0` to support Node >= 18 without extra command line parameters.
+- Add support for multiple `urls` for `GeoJsonCatalogItem`.
+- Automatically explode GeoJSON `MultiPoint` features to `Point` features.
+- Add new table styling traits - `scaleByDistance` and `disableDepthTestDistance`.
+- Add support for `LineString` and `MultiLineString` when using `GeoJsonCatalogItem` in `CZML` mode.
 
 #### 8.4.0 - 2023-12-01
 

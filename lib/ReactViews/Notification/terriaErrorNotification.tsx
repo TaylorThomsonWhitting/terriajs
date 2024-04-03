@@ -28,10 +28,7 @@ const ErrorsBox = (props: {
           key={idx}
         >
           {error instanceof TerriaError ? (
-            <TerriaErrorBox
-              error={error}
-              viewState={props.viewState}
-            ></TerriaErrorBox>
+            <TerriaErrorBox error={error} viewState={props.viewState} />
           ) : (
             // Show error.message (as well as error.stack) if error.stack is defined
             <div>
@@ -72,14 +69,14 @@ const TerriaErrorBox = (props: {
         <ErrorsBox
           errors={props.error.originalError}
           viewState={props.viewState}
-        ></ErrorsBox>
+        />
       ) : null}
     </>
   );
 };
 
-export const terriaErrorNotification =
-  (error: TerriaError) => (viewState: ViewState) => {
+export const terriaErrorNotification = (error: TerriaError) =>
+  function TerriaErrorNotification(viewState: ViewState) {
     // Get "detailed" errors - these can be expanded if the user wants to see more "detail"
 
     let detailedErrors: (Error | TerriaError)[] | undefined;
@@ -133,16 +130,11 @@ export const terriaErrorNotification =
                 runInAction(() => (error.showDetails = show));
               }}
             >
-              <ErrorsBox
-                errors={detailedErrors}
-                viewState={viewState}
-              ></ErrorsBox>
+              <ErrorsBox errors={detailedErrors} viewState={viewState} />
             </Collapsible>
           </>
         ) : null}
-        {!includesFeedbackLink ? (
-          <FeedbackLink viewState={viewState}></FeedbackLink>
-        ) : null}
+        {!includesFeedbackLink ? <FeedbackLink viewState={viewState} /> : null}
       </>
     );
   };

@@ -7,6 +7,8 @@ import {
   Geometries,
   Geometry,
   GeometryCollection,
+  LineString,
+  MultiLineString,
   MultiPoint,
   MultiPolygon,
   Point,
@@ -29,10 +31,10 @@ import {
 } from "mobx";
 import { createTransformer } from "mobx-utils";
 import {
+  Feature as ProtomapsFeature,
   GeomType,
   LineSymbolizer,
-  PolygonSymbolizer,
-  Feature as ProtomapsFeature
+  PolygonSymbolizer
 } from "protomaps";
 import Cartesian2 from "terriajs-cesium/Source/Core/Cartesian2";
 import Cartesian3 from "terriajs-cesium/Source/Core/Cartesian3";
@@ -75,8 +77,8 @@ import { isJson } from "../Core/loadBlob";
 import StandardCssColors from "../Core/StandardCssColors";
 import TerriaError, { networkRequestError } from "../Core/TerriaError";
 import ProtomapsImageryProvider, {
-  GEOJSON_SOURCE_LAYER_NAME,
   GeojsonSource,
+  GEOJSON_SOURCE_LAYER_NAME,
   ProtomapsData
 } from "../Map/ImageryProvider/ProtomapsImageryProvider";
 import Reproject from "../Map/Vector/Reproject";
@@ -396,6 +398,7 @@ function GeoJsonMixin<T extends AbstractConstructor<BaseType>>(Base: T) {
       points = points?.entities.values.length === 0 ? undefined : points;
 
       points ? (points.show = this.show) : null;
+
       return filterOutUndefined([
         points,
         this._dataSource,
@@ -478,6 +481,7 @@ function GeoJsonMixin<T extends AbstractConstructor<BaseType>>(Base: T) {
     protected async forceLoadMapItems(): Promise<void> {
       const czmlTemplate = this.czmlTemplate;
       const filterByProperties = this.filterByProperties;
+      const explodeMultiPoints = this.explodeMultiPoints;
 
       let geoJson: FeatureCollectionWithCrs | undefined;
 
@@ -531,6 +535,14 @@ function GeoJsonMixin<T extends AbstractConstructor<BaseType>>(Base: T) {
               ([key, value]) => feature.properties![key] === value
             )
           ) {
+            continue;
+          }
+
+          if (explodeMultiPoints && feature.geometry.type === "MultiPoint") {
+            // Replace the MultiPoint with equivalent Point features and repeat
+            // the iteration to pick up the exploded features.
+            features.splice(i, 1, ...explodeMultiPoint(feature));
+            i--;
             continue;
           }
 
@@ -637,8 +649,8 @@ function GeoJsonMixin<T extends AbstractConstructor<BaseType>>(Base: T) {
         });
 
         if (matchedStyles !== undefined) {
-          for (let matched of matchedStyles) {
-            for (let trait of Object.keys(matched.style.traits)) {
+          for (const matched of matchedStyles) {
+            for (const trait of Object.keys(matched.style.traits)) {
               featureProperties[trait] =
                 // @ts-ignore - TS can't tell that `trait` is of the correct index type for style
                 matched.style[trait] ?? featureProperties[trait];
@@ -672,7 +684,7 @@ function GeoJsonMixin<T extends AbstractConstructor<BaseType>>(Base: T) {
         const dataSource = new CustomDataSource(this.name || "Table");
         dataSource.entities.suspendEvents();
 
-        let features: Entity[] = createLongitudeLatitudeFeaturePerRow(
+        const features: Entity[] = createLongitudeLatitudeFeaturePerRow(
           style,
           longitudes,
           latitudes
@@ -902,10 +914,12 @@ function GeoJsonMixin<T extends AbstractConstructor<BaseType>>(Base: T) {
             czml.properties ?? {},
             stringifyFeatureProperties(feature.properties ?? {})
           );
+
           rootCzml.push(czml);
         } else if (
-          feature.geometry?.type === "Polygon" ||
-          (feature.geometry?.type === "MultiPolygon" && czmlTemplate?.polygon)
+          (feature.geometry?.type === "Polygon" ||
+            feature.geometry?.type === "MultiPolygon") &&
+          czmlTemplate?.polygon
         ) {
           const czml = clone(czmlTemplate ?? {}, true);
 
@@ -947,6 +961,59 @@ function GeoJsonMixin<T extends AbstractConstructor<BaseType>>(Base: T) {
 
             czml.polygon.positions = { cartographicDegrees: positions };
             czml.polygon.holes = { cartographicDegrees: holes };
+
+            czml.properties = Object.assign(
+              czml.properties ?? {},
+              stringifyFeatureProperties(feature.properties ?? {})
+            );
+            rootCzml.push(czml);
+          }
+        } else if (
+          (feature?.geometry?.type === "LineString" ||
+            feature.geometry?.type === "MultiLineString") &&
+          (czmlTemplate?.polyline ||
+            czmlTemplate?.polylineVolume ||
+            czmlTemplate?.wall ||
+            czmlTemplate?.corridor)
+        ) {
+          const czml = clone(czmlTemplate ?? {}, true);
+
+          // To handle both Polygon and MultiPolygon - transform Polygon coords into MultiPolygon coords
+          const multiLineString =
+            feature.geometry?.type === "LineString"
+              ? [(feature.geometry as LineString).coordinates]
+              : (feature.geometry as MultiLineString).coordinates;
+
+          // Loop through Polygons in MultiPolygon
+          for (let j = 0; j < multiLineString.length; j++) {
+            const geom = multiLineString[j];
+            const positions: number[] = [];
+
+            geom.forEach((coords) => {
+              if (isJsonNumber(this.czmlTemplate?.heightOffset)) {
+                coords[2] = (coords[2] ?? 0) + this.czmlTemplate!.heightOffset;
+              }
+              positions.push(coords[0], coords[1], coords[2]);
+            });
+
+            // Add positions to all CZML line like features
+            if (czml.polyline) {
+              czml.polyline.positions = { cartographicDegrees: positions };
+            }
+
+            if (czml.polylineVolume) {
+              czml.polylineVolume.positions = {
+                cartographicDegrees: positions
+              };
+            }
+
+            if (czml.wall) {
+              czml.wall.positions = { cartographicDegrees: positions };
+            }
+
+            if (czml.corridor) {
+              czml.corridor.positions = { cartographicDegrees: positions };
+            }
 
             czml.properties = Object.assign(
               czml.properties ?? {},
@@ -1382,6 +1449,22 @@ export function isGeometries(json: any): json is Geometries {
   );
 }
 
+/**
+ * Returns the points in a MultiPoint as separate Point features.
+ */
+function explodeMultiPoint(feature: Feature): Feature[] {
+  return feature.geometry?.type === "MultiPoint"
+    ? feature.geometry.coordinates.map((coordinates) => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates
+        } as Point,
+        properties: feature.properties
+      }))
+    : [];
+}
+
 export function toFeatureCollection(
   json: any
 ): FeatureCollectionWithCrs | undefined {
@@ -1448,7 +1531,7 @@ function createPolylineFromPolygon(
   createEntitiesFromHoles(entities, hierarchy.holes, entity);
 }
 
-async function reprojectToGeographic(
+export async function reprojectToGeographic(
   geoJson: FeatureCollectionWithCrs,
   proj4ServiceBaseUrl?: string
 ): Promise<FeatureCollectionWithCrs> {
@@ -1533,8 +1616,8 @@ function filterValue(
   prop: string,
   func: (obj: any, prop: string) => void
 ) {
-  for (let p in obj) {
-    if (obj.hasOwnProperty(p) === false) {
+  for (const p in obj) {
+    if (Object.hasOwnProperty.call(obj, p) === false) {
       continue;
     } else if (p === prop) {
       if (func && typeof func === "function") {
@@ -1596,7 +1679,7 @@ function describeWithoutUnderscores(
 ): string {
   let html = "";
   for (let key in properties) {
-    if (properties.hasOwnProperty(key)) {
+    if (Object.hasOwnProperty.call(properties, key)) {
       if (key === nameProperty || simpleStyleIdentifiers.indexOf(key) !== -1) {
         continue;
       }
@@ -1751,7 +1834,7 @@ function isPolygonOnTerrain(polygon: PolygonGraphics, now: JulianDate) {
   return isClamped || (!hasPerPositionHeight && !hasPolygonHeight);
 }
 
-export function getColor(color: String | string | Color): Color {
+export function getColor(color: string | Color): Color {
   if (typeof color === "string" || color instanceof String) {
     return Color.fromCssColorString(color.toString()) ?? Color.GRAY;
   } else {
