@@ -115,6 +115,6 @@ export const shareConvertNotification = (
             </>
           ))}
         </Collapsible>
-      </>
+      </React.Fragment>
     );
   };
