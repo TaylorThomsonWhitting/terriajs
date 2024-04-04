@@ -134,6 +134,7 @@ const StandardUserInterfaceBase: React.FC<StandardUserInterfaceProps> =
     );
 
     const terria = props.terria;
+    console.log(terria.hideBranding);
 
     const showStoryBuilder =
       props.viewState.storyBuilderShown &&
@@ -195,7 +196,9 @@ const StandardUserInterfaceBase: React.FC<StandardUserInterfaceProps> =
                             animationDuration={250}
                             btnText={t("addData.btnHide")}
                           />
-                          <Branding version={props.version} />
+                          { !terria.hideBranding 
+                            ? (<Branding version={props.version}/>) 
+                            : (<div css={`padding-top: 1rem;`}></div>) }
                           <SidePanel />
                         </SidePanelContainer>
                       </>

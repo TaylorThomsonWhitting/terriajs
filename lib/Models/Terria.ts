@@ -575,6 +575,9 @@ export default class Terria {
   };
 
   @observable
+  hideBranding: boolean = false;
+
+  @observable
   pickedFeatures: PickedFeatures | undefined;
 
   @observable
@@ -1751,6 +1754,10 @@ export default class Terria {
 
     if (isJsonNumber(initData.splitPosition)) {
       this.splitPosition = initData.splitPosition;
+    }
+
+    if (isJsonBoolean(initData.hideBranding)) {
+      this.hideBranding = initData.hideBranding;
     }
 
     if (isJsonObject(initData.settings)) {
