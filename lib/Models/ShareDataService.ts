@@ -80,8 +80,8 @@ export default class ShareDataService {
       if (!this.isUsable) {
         throw TerriaError.from("`ShareDataService` is not usable");
       }
-      const functionDomain = 'http://localhost:7071';
-      // const functionDomain = 'https://ttwstoragefunctions.azurewebsites.net';
+      // const functionDomain = 'http://localhost:7071';
+      const functionDomain = 'https://ttwstoragefunctions.azurewebsites.net';
 
       const blobName = crypto.randomUUID()
 

@@ -134,7 +134,6 @@ const StandardUserInterfaceBase: React.FC<StandardUserInterfaceProps> =
     );
 
     const terria = props.terria;
-    console.log(terria.hideBranding);
 
     const showStoryBuilder =
       props.viewState.storyBuilderShown &&
