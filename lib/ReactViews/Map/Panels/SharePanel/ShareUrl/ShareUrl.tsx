@@ -95,7 +95,7 @@ export const ShareUrl = forwardRef<
       );
     }
   }, [terria, viewState, shouldShorten, includeStories]);
-
+  console.log(inputTheme)
   return (
     <>
       <Explanation textDark={theme === "light"}>

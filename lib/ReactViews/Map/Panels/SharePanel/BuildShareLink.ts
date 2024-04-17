@@ -273,7 +273,8 @@ export function isShareable(terria: Terria) {
  * @return {Boolean}
  */
 export function canShorten(terria: Terria) {
-  return terria.shareDataService && terria.shareDataService.isUsable;
+  return true;
+  // return terria.shareDataService && terria.shareDataService.isUsable;
 }
 
 /**

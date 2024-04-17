@@ -38,12 +38,13 @@ export default class ShareDataService {
   }
 
   get isUsable(): boolean {
-    return (
-      (this.url !== undefined &&
-        typeof this._serverConfig === "object" &&
-        typeof this._serverConfig.newShareUrlPrefix === "string") ||
-      this.url !== "share"
-    );
+    return true;
+    // return (
+    //   (this.url !== undefined &&
+    //     typeof this._serverConfig === "object" &&
+    //     typeof this._serverConfig.newShareUrlPrefix === "string") ||
+    //   this.url !== "share"
+    // );
   }
 
   /**
@@ -51,28 +52,83 @@ export default class ShareDataService {
    * @param shareData JSON to store.
    * @return A promise for the token (which can later be resolved at /share/TOKEN).
    */
-  async getShareToken(shareData: any): Promise<string> {
-    if (!this.isUsable) {
-      throw TerriaError.from("`ShareDataService` is not usable");
-    }
+  // async getShareToken(shareData: any): Promise<string> {
+  //   if (!this.isUsable) {
+  //     throw TerriaError.from("`ShareDataService` is not usable");
+  //   }
 
-    try {
-      const result = await loadWithXhr({
-        url: this.url,
-        method: "POST",
-        data: JSON.stringify(shareData),
-        headers: { "Content-Type": "application/json" },
-        responseType: "json"
-      });
-      const json = typeof result === "string" ? JSON.parse(result) : result;
-      return json.id;
-    } catch (error) {
-      throw TerriaError.from(error, {
-        title: i18next.t("models.shareData.generateErrorTitle"),
-        message: i18next.t("models.shareData.generateErrorMessage"),
-        importance: 1
-      });
-    }
+  //   try {
+  //     const result = await loadWithXhr({
+  //       url: this.url,
+  //       method: "POST",
+  //       data: JSON.stringify(shareData),
+  //       headers: { "Content-Type": "application/json" },
+  //       responseType: "json"
+  //     });
+  //     const json = typeof result === "string" ? JSON.parse(result) : result;
+  //     return json.id;
+  //   } catch (error) {
+  //     throw TerriaError.from(error, {
+  //       title: i18next.t("models.shareData.generateErrorTitle"),
+  //       message: i18next.t("models.shareData.generateErrorMessage"),
+  //       importance: 1
+  //     });
+  //   }
+  // }
+
+  async getShareToken(shareData: any): Promise<string> {
+      if (!this.isUsable) {
+        throw TerriaError.from("`ShareDataService` is not usable");
+      }
+      const functionDomain = 'http://localhost:7071';
+      // const functionDomain = 'https://ttwstoragefunctions.azurewebsites.net';
+
+      const blobName = crypto.randomUUID()
+
+      try {
+        const getWriteSasResponse = await fetch(
+          `${functionDomain}/api/DigitalTwinsShareStorage?container=default&permission=write&blob=${blobName}`, {
+          method: 'GET',
+          mode: 'cors'
+        });
+
+        if (getWriteSasResponse.status >= 300)
+          throw new Error('Could not get SAS with write permissions.');
+
+        const writeSas = await getWriteSasResponse.text();
+
+        const putShareDataResponse = await fetch(
+          writeSas, {
+            method: 'PUT',
+            mode: 'cors',
+            headers: {
+              'x-ms-blob-type': 'BlockBlob'
+            },
+            body: JSON.stringify(shareData)
+          }
+        );
+
+        if (putShareDataResponse.status >= 300)
+          throw new Error('Could not write to the container.');
+
+        const lifetime = 43200; // 30 days in minutes
+        const getReadSasResponse = await fetch(
+          `${functionDomain}/api/DigitalTwinsShareStorage?container=default&blob=${blobName}&lifetime=${lifetime}`, {
+          method: 'GET',
+          mode: 'cors'
+        });
+
+        if (getReadSasResponse.status >= 300)
+          throw new Error('Could not get SAS with write permissions.');
+
+        return getReadSasResponse.text();
+      } catch (error) {
+        throw TerriaError.from(error, {
+          title: i18next.t("models.shareData.generateErrorTitle"),
+          message:i18next.t("models.shareData.generateErrorMessage"),
+          importance: 1
+        });
+      }
   }
 
   async resolveData(token: string): Promise<JsonObject> {
@@ -81,7 +137,8 @@ export default class ShareDataService {
     }
 
     try {
-      const shareJson = await loadJson(this.url + "/" + token);
+      // const shareJson = await loadJson(this.url + "/" + token);
+      const shareJson = await loadJson(token);
 
       if (!isJsonObject(shareJson, false)) {
         throw TerriaError.from(
@@ -90,6 +147,7 @@ export default class ShareDataService {
           }\n\`${JSON.stringify(shareJson)}\``
         );
       }
+
 
       return shareJson;
     } catch (error) {

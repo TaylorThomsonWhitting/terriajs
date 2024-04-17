@@ -52,7 +52,7 @@ export const SharePanelContent: FC<ISharePanelContentProps> = ({
       <Spacing bottom={1} />
       <ShareUrl
         theme="dark"
-        inputTheme="dark"
+        inputTheme="light"
         terria={terria}
         viewState={viewState}
         includeStories={includeStoryInShare}

@@ -142,7 +142,7 @@ const InnerPanel = createReactClass({
           showDropdownAsModal={this.props.showDropdownAsModal}
           css={`
             svg {
-              fill: ${(p) => p.theme.textLight};
+              fill: ${(p) => p.theme.textDark};
             }
             &:hover,
             &:focus {

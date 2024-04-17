@@ -52,6 +52,7 @@ export const AdvancedOptions: FC<IAdvancedOptionsProps> = ({
           medium
           css={`
             display: flex;
+            color: #000;
           `}
         >
           {t("share.btnAdvanced")}
@@ -99,5 +100,5 @@ export const AdvancedOptions: FC<IAdvancedOptionsProps> = ({
 
 const AdvanceOptionsIcon = styled(StyledIcon).attrs({
   styledWidth: "10px",
-  light: true
+  light: false
 })``;

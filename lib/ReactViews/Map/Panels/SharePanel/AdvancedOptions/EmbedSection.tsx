@@ -25,7 +25,7 @@ export const EmbedSection: FC<IEmbedSectionProps> = ({ shareUrl }) => {
       <Explanation>{t("share.embedDescription")}</Explanation>
       <Input
         large
-        dark
+        light
         type="text"
         readOnly
         placeholder={t("share.shortLinkShortening")}

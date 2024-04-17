@@ -99,6 +99,7 @@ ${(props) =>
 export const StyledTextArea = styled.textarea<TextAreaProps>`
   ${commonStyles}
   line-height: ${(props) => props.lineHeight};
+  color: #000;
   padding-top: 5px;
   padding-bottom: 5px;
   cursor: auto;
