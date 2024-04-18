@@ -11,6 +11,9 @@ interface ShareDataServiceOptions {
   url?: string;
 }
 
+// const functionDomain = 'http://localhost:7071';
+const functionDomain = 'https://ttwstoragefunctions.azurewebsites.net';
+
 /**
  * Interface to the terriajs-server service for creating short share links.
  * @param {*} options
@@ -77,58 +80,62 @@ export default class ShareDataService {
   // }
 
   async getShareToken(shareData: any): Promise<string> {
-      if (!this.isUsable) {
-        throw TerriaError.from("`ShareDataService` is not usable");
+    if (!this.isUsable) {
+      throw TerriaError.from("`ShareDataService` is not usable");
+    }
+
+    const blobName = crypto.randomUUID()
+
+    try {
+      const getWriteSasResponse = await fetch(
+        `${functionDomain}/api/DigitalTwinsShareStorage?container=default&permission=write&blob=${blobName}`, {
+        method: 'GET',
+        mode: 'cors'
+      });
+
+      if (getWriteSasResponse.status >= 300)
+        throw new Error('Could not get SAS with write permissions.');
+
+      const writeSas = await getWriteSasResponse.text();
+
+      const putShareDataResponse = await fetch(
+        writeSas, {
+        method: 'PUT',
+        mode: 'cors',
+        headers: {
+          'x-ms-blob-type': 'BlockBlob'
+        },
+        body: JSON.stringify(shareData)
       }
-      // const functionDomain = 'http://localhost:7071';
-      const functionDomain = 'https://ttwstoragefunctions.azurewebsites.net';
+      );
 
-      const blobName = crypto.randomUUID()
+      if (putShareDataResponse.status >= 300)
+        throw new Error('Could not write to the container.');
 
-      try {
-        const getWriteSasResponse = await fetch(
-          `${functionDomain}/api/DigitalTwinsShareStorage?container=default&permission=write&blob=${blobName}`, {
-          method: 'GET',
-          mode: 'cors'
-        });
+      const lifetime = 43200; // 30 days in minutes
+      const getReadSasResponse = await fetch(
+        `${functionDomain}/api/DigitalTwinsShareStorage?container=default&blob=${blobName}&lifetime=${lifetime}`, {
+        method: 'GET',
+        mode: 'cors'
+      });
 
-        if (getWriteSasResponse.status >= 300)
-          throw new Error('Could not get SAS with write permissions.');
+      if (getReadSasResponse.status >= 300)
+        throw new Error('Could not get SAS with write permissions.');
 
-        const writeSas = await getWriteSasResponse.text();
+      const sasUrl = await getReadSasResponse.text();
+      const sasGuidAndParams = sasUrl.split('/')[4];
+      const [sasGuid, sasParamsString] = sasGuidAndParams.split('?');
+      const sasParams = sasParamsString.split('&').filter((p) => p.startsWith('se') || p.startsWith('sig'));
+      const shareToken = `${sasGuid}?${sasParams[0]}&${sasParams[1]}`
+      return shareToken;
 
-        const putShareDataResponse = await fetch(
-          writeSas, {
-            method: 'PUT',
-            mode: 'cors',
-            headers: {
-              'x-ms-blob-type': 'BlockBlob'
-            },
-            body: JSON.stringify(shareData)
-          }
-        );
-
-        if (putShareDataResponse.status >= 300)
-          throw new Error('Could not write to the container.');
-
-        const lifetime = 43200; // 30 days in minutes
-        const getReadSasResponse = await fetch(
-          `${functionDomain}/api/DigitalTwinsShareStorage?container=default&blob=${blobName}&lifetime=${lifetime}`, {
-          method: 'GET',
-          mode: 'cors'
-        });
-
-        if (getReadSasResponse.status >= 300)
-          throw new Error('Could not get SAS with write permissions.');
-
-        return getReadSasResponse.text();
-      } catch (error) {
-        throw TerriaError.from(error, {
-          title: i18next.t("models.shareData.generateErrorTitle"),
-          message:i18next.t("models.shareData.generateErrorMessage"),
-          importance: 1
-        });
-      }
+    } catch (error) {
+      throw TerriaError.from(error, {
+        title: i18next.t("models.shareData.generateErrorTitle"),
+        message: i18next.t("models.shareData.generateErrorMessage"),
+        importance: 1
+      });
+    }
   }
 
   async resolveData(token: string): Promise<JsonObject> {
@@ -136,9 +143,11 @@ export default class ShareDataService {
       throw TerriaError.from("`ShareDataService` is not usable");
     }
 
+    const sasVersion = '2022-11-02';
     try {
       // const shareJson = await loadJson(this.url + "/" + token);
-      const shareJson = await loadJson(token);
+      const url = `https://ttwdtsharestorage.blob.core.windows.net/default/${token}&sr=b&sp=r&sv=${sasVersion}`
+      const shareJson = await loadJson(url);
 
       if (!isJsonObject(shareJson, false)) {
         throw TerriaError.from(
